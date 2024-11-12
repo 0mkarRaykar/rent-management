@@ -14,7 +14,6 @@ const userSchema = new Schema({
   },
   role: { type: Number, enum: [0, 1], default: 1 }, // 0 for Super-Admin, 1 for Subscriber
   profilePicture: { type: String, default: "" },
-  status: { type: String, enum: ["Active", "Inactive"], default: "Active" },
   dateOfRegistration: { type: Date, default: Date.now },
   dateOfExpiry: { type: Date },
   isActive: { type: Boolean, default: true },
