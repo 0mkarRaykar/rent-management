@@ -1,12 +1,10 @@
-import express from "express";
+import { Router } from "express";
+import { verifyJWT } from "../middlewares/authMiddleware.js";
+
 import { fetchAllUsers } from "../controllers/userController.js";
-import {
-  authenticateUser,
-  authorizeRoles,
-} from "../middlewares/authMiddleware.js";
 
-const router = express.Router();
+const router = Router();
 
-router.get("/", authenticateUser, authorizeRoles([0]), fetchAllUsers);
+router.route("/").post(verifyJWT, fetchAllUsers);
 
 export default router;

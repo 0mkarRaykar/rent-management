@@ -1,31 +1,77 @@
-import { Schema, model } from "mongoose";
-import { genSalt, hash, compare } from "bcrypt";
+import mongoose, { Schema } from "mongoose";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
-const userSchema = new Schema({
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  fullName: { type: String, required: true },
-  mobileNumber: { type: String, required: true },
-  address: {
-    country: { type: String, required: true },
-    state: { type: String, required: true },
-    city: { type: String, required: true },
-    pincode: { type: String, required: true },
+const userSchema = new Schema(
+  {
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    fullName: {
+      type: String,
+      required: true,
+    },
+    mobileNumber: {
+      type: String,
+      required: true,
+    },
+    address: {
+      country: {
+        type: String,
+        required: true,
+      },
+      state: {
+        type: String,
+        required: true,
+      },
+      city: {
+        type: String,
+        required: true,
+      },
+      pincode: {
+        type: String,
+        required: true,
+      },
+    },
+    role: {
+      type: Number,
+      enum: [0, 1],
+      default: 1,
+    }, // 0 for Super-Admin, 1 for Subscriber
+    profilePicture: {
+      type: String,
+      default: "",
+    },
+    dateOfRegistration: {
+      type: Date,
+      default: Date.now,
+    },
+    dateOfExpiry: { type: Date },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
-  role: { type: Number, enum: [0, 1], default: 1 }, // 0 for Super-Admin, 1 for Subscriber
-  profilePicture: { type: String, default: "" },
-  dateOfRegistration: { type: Date, default: Date.now },
-  dateOfExpiry: { type: Date },
-  isActive: { type: Boolean, default: true },
-  isDeleted: { type: Boolean, default: false },
-});
+  {
+    timestamps: true,
+  }
+);
 
 // Pre-save hook to hash the password before saving
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   try {
-    const salt = await genSalt(10);
-    this.password = await hash(this.password, salt);
+    this.password = await bcrypt.hash(this.password, 10);
     next();
   } catch (error) {
     next(error);
@@ -33,10 +79,32 @@ userSchema.pre("save", async function (next) {
 });
 
 // Method to compare passwords
-userSchema.methods.comparePassword = async function (candidatePassword) {
-  return await compare(candidatePassword, this.password);
+userSchema.methods.isPasswordCorrect = async function (password) {
+  return await bcrypt.compare(password, this.password);
 };
 
-const User = model("User", userSchema);
-
-export default User;
+userSchema.methods.generateAccessToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+      email: this.email,
+      fullName: this.fullName,
+    },
+    process.env.ACCESS_TOKEN_SECRET,
+    {
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+    }
+  );
+};
+userSchema.methods.generateRefreshToken = function () {
+  return jwt.sign(
+    {
+      _id: this._id,
+    },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
+    }
+  );
+};
+export const User = mongoose.model("User", userSchema);

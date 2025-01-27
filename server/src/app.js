@@ -18,16 +18,16 @@ app.use(cookieParser());
 
 // routes import
 import authRouter from "./routes/authRoute.js";
-import userRouter from "./routes/userRoute.js";
-import propertyTypeRouter from "./routes/propertyTypeRoute.js";
-import amenityRouter from "./routes/amenityRoute.js";
-import propertyRouter from "./routes/propertyRoute.js";
+// import userRouter from "./routes/userRoute.js";
+// import propertyTypeRouter from "./routes/propertyTypeRoute.js";
+// import amenityRouter from "./routes/amenityRoute.js";
+// import propertyRouter from "./routes/propertyRoute.js";
 
 // routes declaration
 app.use("/api/auth", authRouter);
-app.use("/api/user", userRouter);
-app.use("/api/property-types", propertyTypeRouter);
-app.use("/api/amenity", amenityRouter);
-app.use("/api/property", propertyRouter);
+// app.use("/api/user", userRouter);
+// app.use("/api/property-types", propertyTypeRouter);
+// app.use("/api/amenity", amenityRouter);
+// app.use("/api/property", propertyRouter);
 
 export { app };

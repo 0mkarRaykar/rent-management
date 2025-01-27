@@ -1,18 +1,20 @@
-import express from "express";
-import { registerUser, loginUser } from "../controllers/authController.js";
-import { authorizeRoles } from "../middlewares/authMiddleware.js";
+import { Router } from "express";
+import {
+  registerUser,
+  loginUser,
+  logoutUser,
+  changeCurrentPassword,
+  refreshAccessToken,
+} from "../controllers/authController.js";
+import { verifyJWT } from "../middlewares/authMiddleware.js";
 
-const router = express.Router();
+const router = Router();
 
-// Route for registering a new user
-router.post("/register", registerUser);
+router.route("/register").post(registerUser);
+router.route("/login").post(loginUser);
+router.route("/logout").post(verifyJWT, logoutUser);
+router.route("/change-password").post(verifyJWT, changeCurrentPassword);
 
-// Route for logging in a user
-router.post("/login", loginUser);
-
-// Protected route example (only Super-Admins)
-router.post("/admin-route", authorizeRoles([0]), (req, res) => {
-  res.send("Only Super-Admin can access this route");
-});
+router.route("/refresh-token").post(refreshAccessToken);
 
 export default router;
