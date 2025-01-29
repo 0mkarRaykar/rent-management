@@ -92,9 +92,16 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // Check if all fields are provided
   if (
-    [email, fullName, password, mobileNumber, role, isActive, isDeleted].some(
-      (field) => field?.trim() === ""
-    )
+    [
+      email,
+      fullName,
+      password,
+      address,
+      mobileNumber,
+      role,
+      isActive,
+      isDeleted,
+    ].some((field) => typeof field === "string" && field.trim() === "")
   ) {
     return res.status(400).json({
       success: false,
@@ -105,7 +112,7 @@ const registerUser = asyncHandler(async (req, res) => {
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({
+      return res.status(409).json({
         success: false,
         message: "User already exists",
       });

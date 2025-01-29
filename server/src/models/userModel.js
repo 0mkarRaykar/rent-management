@@ -8,6 +8,7 @@ const userSchema = new Schema(
       type: String,
       required: true,
       unique: true,
+      trim: true,
     },
     password: {
       type: String,
@@ -16,6 +17,7 @@ const userSchema = new Schema(
     fullName: {
       type: String,
       required: true,
+      trim: true,
     },
     mobileNumber: {
       type: String,
@@ -52,14 +54,18 @@ const userSchema = new Schema(
       type: Date,
       default: Date.now,
     },
-    dateOfExpiry: { type: Date },
+    dateOfExpiry: {
+      type: Date,
+    },
     isActive: {
       type: Boolean,
       default: true,
+      set: (value) => value,
     },
     isDeleted: {
       type: Boolean,
       default: false,
+      set: (value) => value,
     },
   },
   {
