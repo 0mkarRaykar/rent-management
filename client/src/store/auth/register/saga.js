@@ -1,55 +1,42 @@
-import { takeEvery, fork, put, all, call } from "redux-saga/effects";
-
-//Account Redux states
+import { takeEvery, put, call } from "redux-saga/effects";
+import axios from "axios";
 import { REGISTER_USER } from "./actionTypes";
 import { registerUserSuccessful, registerUserFailed } from "./actions";
 
-import axios from "axios";
+// API endpoint
+const API_URL =
+  "https://rent-management-pg2q.onrender.com/api/v1/auths/register";
 
-// Is user register successfull then direct plot user in redux.
-function* registerUser({ payload: { user, history } }) {
+// Worker Saga: Handles user registration
+// Worker Saga: Handles user registration
+function* registerUser({ payload: { user, navigate } }) {
   try {
-    // Use axios to send the register request to your backend
-    const response = yield call(
-      axios.post,
-      "http://localhost:8000/api/auth/register",
-      {
-        email: user.email,
-        password: user.password,
-        fullName: user.fullName,
-        mobileNumber: user.mobileNumber,
-        address: {
-          country: user.address.country,
-          state: user.address.state,
-          city: user.address.city,
-          pincode: user.address.pincode,
-        },
-        role: user.role || 1, // Default role is 1 if not provided
-      }
-    );
+    const response = yield call(axios.post, API_URL, user);
 
-    // Save the user data to local storage or any necessary location
-    localStorage.setItem("authUser", JSON.stringify(response.data));
+    // Store authentication tokens
+    localStorage.setItem("authToken", response.data.token);
+    localStorage.setItem("user", JSON.stringify(response.data.user));
 
-    // Dispatch the success action with the registered user data
     yield put(registerUserSuccessful(response.data));
 
+    if (navigate) {
+      navigate("/dashboard");
+    }
   } catch (error) {
-    // Dispatch the failure action if registration fails
     yield put(
-      registerUserFailed(
-        error.response ? error.response.data.message : error.message
-      )
+      registerUserFailed(error.response?.data?.message || error.message)
     );
   }
 }
 
+// Watcher Saga: Watches for REGISTER_USER action
 export function* watchUserRegister() {
   yield takeEvery(REGISTER_USER, registerUser);
 }
 
+// Combine all account-related sagas
 function* accountSaga() {
-  yield all([fork(watchUserRegister)]);
+  yield takeEvery(REGISTER_USER, registerUser);
 }
 
 export default accountSaga;
