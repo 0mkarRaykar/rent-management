@@ -1,86 +1,76 @@
-import { call, put, takeEvery, takeLatest } from "redux-saga/effects";
-import { toast } from "react-toastify"; // Import toast from react-toastify
-
-// Login Redux States
-import { LOGIN_USER, LOGOUT_USER, SOCIAL_LOGIN } from "./actionTypes";
-import { apiError, loginSuccess, logoutUserSuccess } from "./actions";
-
+import { call, put, takeEvery } from "redux-saga/effects";
+import { toast } from "react-toastify";
 import axios from "axios";
+
+// Import action types and actions
+import { LOGIN_USER, LOGOUT_USER } from "./actionTypes";
+import { loginSuccess, apiError, logoutUserSuccess } from "./actions";
+
+// Function to handle the login API call
+const loginApi = async (userData) => {
+  const response = await axios.post(
+    "https://rent-management-pg2q.onrender.com/api/v1/auths/login",
+    userData,
+    {
+      withCredentials: true,
+    }
+  );
+  return response.data;
+};
 
 function* loginUser({ payload: { user, history } }) {
   try {
-    // Use axios to send the login request to your backend
-    const response = yield call(
-      axios.post,
-      "http://localhost:8000/api/auth/login",
-      {
-        email: user.email,
-        password: user.password,
-      }
-    );
+    const response = yield call(loginApi, user);
 
-    // Extract user data from the response
-    const userData = response.data;
+    const { user: loggedInUser, accessToken, refreshToken } = response.data;
 
-    // Save the user data to local storage
-    localStorage.setItem("authUser", JSON.stringify(userData));
+    if (!loggedInUser.isActive) {
+      toast.error("Account is deactivated by system.");
+      return;
+    }
 
-    // Dispatch the success action with the user data
-    yield put(loginSuccess(userData));
+    localStorage.setItem("authUser", JSON.stringify(loggedInUser));
+    localStorage.setItem("accessToken", accessToken);
+    localStorage.setItem("refreshToken", refreshToken);
 
-    // Redirect based on user role
-    if (userData.role === 0) {
+    yield put(loginSuccess(loggedInUser));
+    toast.success("Login successful!");
+
+    if (loggedInUser.role === 0) {
       history("/admin-dashboard");
-    } else if (userData.role === 1) {
+    } else if (loggedInUser.role === 1) {
       history("/dashboard");
     }
   } catch (error) {
-    // Dispatch the API error if the request fails
-    yield put(
-      apiError(error.response ? error.response.data.message : error.message)
-    );
+    const errorMessage = error.response?.data?.message || "Login failed.";
+    yield put(apiError(errorMessage));
+    toast.error(errorMessage);
   }
 }
 
 function* logoutUser({ payload: { history } }) {
   try {
-    // Remove the authUser from local storage
+    // Clear user data from localStorage
     localStorage.removeItem("authUser");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
 
-    // Optionally, make a request to your backend to log out
+    // Dispatch logout success action
     yield put(logoutUserSuccess());
 
-    // Redirect to login page after logout
+    // Redirect to login page
     history("/login");
-  } catch (error) {
-    yield put(
-      apiError(error.response ? error.response.data.message : error.message)
-    );
-  }
-}
 
-function* socialLogin({ payload: { type, history } }) {
-  try {
-    if (import.meta.env.VITE_APP_DEFAULTAUTH === "firebase") {
-      const fireBaseBackend = getFirebaseBackend();
-      const response = yield call(fireBaseBackend.socialLoginUser, type);
-      if (response) {
-        history("/dashboard");
-      } else {
-        history("/login");
-      }
-      localStorage.setItem("authUser", JSON.stringify(response));
-      yield put(loginSuccess(response));
-      if (response) history("/dashboard");
-    }
+    toast.success("Logged out successfully!");
   } catch (error) {
-    yield put(apiError(error));
+    const errorMessage = error.response?.data?.message || "Logout failed.";
+    yield put(apiError(errorMessage));
+    toast.error(errorMessage);
   }
 }
 
 function* authSaga() {
   yield takeEvery(LOGIN_USER, loginUser);
-  yield takeLatest(SOCIAL_LOGIN, socialLogin);
   yield takeEvery(LOGOUT_USER, logoutUser);
 }
 

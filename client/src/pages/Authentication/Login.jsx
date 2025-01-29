@@ -38,7 +38,6 @@ const Login = (props) => {
   const dispatch = useDispatch();
 
   const validation = useFormik({
-    // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
 
     initialValues: {
