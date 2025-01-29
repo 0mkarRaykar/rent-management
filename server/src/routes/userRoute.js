@@ -1,10 +1,17 @@
 import { Router } from "express";
 import { verifyJWT } from "../middlewares/authMiddleware.js";
 
-import { fetchAllUsers } from "../controllers/userController.js";
+import {
+  getAllUsers,
+  getUserById,
+  updateUser,
+  deleteUser,
+} from "../controllers/userController.js";
 
 const router = Router();
+router.use(verifyJWT);
 
-router.route("/").post(verifyJWT, fetchAllUsers);
+router.route("/getAllUsers").get(verifyJWT, getAllUsers);
+router.route("/:userId").get(getUserById).patch(updateUser).delete(deleteUser);
 
 export default router;
