@@ -7,4 +7,4 @@ export * from "./auth/forgetpwd/actions";
 export * from "./auth/profile/actions";
 
 //User
-export * from "./user/fetchUser/actions";
+export * from "./user/actions";

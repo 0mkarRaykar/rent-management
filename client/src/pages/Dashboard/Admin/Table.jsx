@@ -40,7 +40,7 @@ import {
   addUserRequest as onAddNewUser,
   updateUserRequest as onUpdateUser,
   deleteUserRequest as onDeleteUser,
-} from "../../../store/user/fetchUser/actions";
+} from "../../../store/user/actions";
 
 const EcommerceCustomers = () => {
   document.title = "Users | Skote";
