@@ -8,7 +8,7 @@ import Breadcrumbs from "../../../components/Common/Breadcrumb";
 //i18n
 import { withTranslation } from "react-i18next";
 import Table from "./Table";
-
+import EcommerceCustomers from "./Table";
 const AdminDashboard = (props) => {
   //meta title
   document.title = "Dashboard | Skote - Vite React Admin & Dashboard Template";
@@ -24,7 +24,8 @@ const AdminDashboard = (props) => {
           />
         </Container> */}
       {/* </div> */}
-      <Table />
+      {/* <Table /> */}
+      <EcommerceCustomers />
     </React.Fragment>
   );
 };

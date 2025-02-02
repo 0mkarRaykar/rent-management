@@ -1,9 +1,4 @@
 import {
-  GET_ALL_USERS,
-  GET_ALL_USERS_SUCCESS,
-  GET_ALL_USERS_FAIL,
-
-  // non used code
   GET_CART_DATA_FAIL,
   GET_CART_DATA_SUCCESS,
   GET_CUSTOMERS_FAIL,
@@ -37,7 +32,6 @@ import {
 } from "./actionTypes";
 
 const INIT_STATE = {
-  users: [],
   products: [],
   product: {},
   orders: [],
@@ -46,23 +40,16 @@ const INIT_STATE = {
   shops: [],
   error: {},
   productComments: [],
-  loading: true,
+  loading: true
 };
 
 const Ecommerce = (state = INIT_STATE, action) => {
   switch (action.type) {
-    case GET_ALL_USERS:
-      return { ...state, loading: true };
-    case GET_ALL_USERS_SUCCESS:
-      return { ...state, loading: false, users: action.payload };
-    case GET_ALL_USERS_FAIL:
-      return { ...state, loading: false, error: action.payload };
-    // non used code
     case GET_PRODUCTS_SUCCESS:
       return {
         ...state,
         products: action.payload,
-        loading: true,
+        loading: true
       };
 
     case GET_PRODUCTS_FAIL:
@@ -87,7 +74,7 @@ const Ecommerce = (state = INIT_STATE, action) => {
       return {
         ...state,
         orders: action.payload,
-        loading: true,
+        loading: true
       };
 
     case GET_ORDERS_FAIL:
@@ -111,7 +98,7 @@ const Ecommerce = (state = INIT_STATE, action) => {
     case UPDATE_ORDER_SUCCESS:
       return {
         ...state,
-        orders: state.orders.map((order) =>
+        orders: state.orders.map(order =>
           order.id.toString() === action.payload.id.toString()
             ? { order, ...action.payload }
             : order
@@ -128,7 +115,7 @@ const Ecommerce = (state = INIT_STATE, action) => {
       return {
         ...state,
         orders: state.orders.filter(
-          (order) => order.id.toString() !== action.payload.toString()
+          order => order.id.toString() !== action.payload.toString()
         ),
       };
 
@@ -154,7 +141,7 @@ const Ecommerce = (state = INIT_STATE, action) => {
       return {
         ...state,
         customers: action.payload,
-        loading: true,
+        loading: true
       };
 
     case GET_CUSTOMERS_FAIL:
@@ -178,7 +165,7 @@ const Ecommerce = (state = INIT_STATE, action) => {
     case UPDATE_CUSTOMER_SUCCESS:
       return {
         ...state,
-        customers: state.customers.map((customer) =>
+        customers: state.customers.map(customer =>
           customer.id.toString() === action.payload.id.toString()
             ? { customer, ...action.payload }
             : customer
@@ -195,7 +182,7 @@ const Ecommerce = (state = INIT_STATE, action) => {
       return {
         ...state,
         customers: state.customers.filter(
-          (customer) => customer.id.toString() !== action.payload.toString()
+          customer => customer.id.toString() !== action.payload.toString()
         ),
       };
 
@@ -209,7 +196,7 @@ const Ecommerce = (state = INIT_STATE, action) => {
       return {
         ...state,
         shops: action.payload,
-        loading: true,
+        loading: true
       };
 
     case GET_SHOPS_FAIL:

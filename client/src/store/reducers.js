@@ -12,6 +12,9 @@ import Profile from "./auth/profile/reducer";
 //E-commerce
 import ecommerce from "./e-commerce/reducer";
 
+//User
+import users from "./user/fetchUser/reducer";
+
 const rootReducer = combineReducers({
   // public
   Layout,
@@ -20,6 +23,7 @@ const rootReducer = combineReducers({
   ForgetPassword,
   Profile,
   ecommerce,
+  users,
 });
 
 export default rootReducer;

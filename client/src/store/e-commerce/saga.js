@@ -19,7 +19,6 @@ import {
   ON_LIKE_REPLY,
   ON_ADD_REPLY,
   ON_ADD_COMMENT,
-  GET_ALL_USERS,
 } from "./actionTypes";
 import {
   getCartDataFail,
@@ -81,21 +80,8 @@ import {
 
 // toast
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import 'react-toastify/dist/ReactToastify.css';
 
-function* fetchAllUsers() {
-  try {
-    const response = yield call(
-      axios.get,
-      "http://localhost:8000/api/user/fetchAllUser"
-    );
-    yield put(getAllUsersSuccess(response.data));
-  } catch (error) {
-    yield put(getAllUsersFail(error.message));
-  }
-}
-
-// non used code
 function* fetchProducts() {
   try {
     const response = yield call(getProducts);
@@ -265,9 +251,6 @@ function* onAddComment({ payload: { productId, commentText } }) {
 }
 
 function* ecommerceSaga() {
-  yield takeEvery(GET_ALL_USERS, fetchAllUsers);
-
-  // non used code
   yield takeEvery(GET_PRODUCTS, fetchProducts);
   yield takeEvery(GET_PRODUCT_DETAIL, fetchProductDetail);
   yield takeEvery(GET_ORDERS, fetchOrders);

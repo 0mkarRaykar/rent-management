@@ -1,9 +1,4 @@
 import {
-  GET_ALL_USERS,
-  GET_ALL_USERS_SUCCESS,
-  GET_ALL_USERS_FAIL,
-
-  // non used code
   GET_CART_DATA,
   GET_CART_DATA_FAIL,
   GET_CART_DATA_SUCCESS,
@@ -54,269 +49,254 @@ import {
   ON_ADD_REPLY_FAIL,
   ON_ADD_COMMENT,
   ON_ADD_COMMENT_SUCCESS,
-  ON_ADD_COMMENT_FAIL,
-} from "./actionTypes";
+  ON_ADD_COMMENT_FAIL
+} from "./actionTypes"
 
-export const getAllUsers = () => ({
-  type: GET_ALL_USERS,
-});
-
-export const getAllUsersSuccess = (users) => ({
-  type: GET_ALL_USERS_SUCCESS,
-  payload: users,
-});
-
-export const getAllUsersFail = (error) => ({
-  type: GET_ALL_USERS_FAIL,
-  payload: error,
-});
-
-// non used code
 export const getProducts = () => ({
   type: GET_PRODUCTS,
-});
+})
 
-export const getProductsSuccess = (products) => ({
+export const getProductsSuccess = products => ({
   type: GET_PRODUCTS_SUCCESS,
   payload: products,
-});
+})
 
-export const getProductsFail = (error) => ({
+export const getProductsFail = error => ({
   type: GET_PRODUCTS_FAIL,
   payload: error,
-});
+})
 
-export const getProductDetail = (productId) => ({
+export const getProductDetail = productId => ({
   type: GET_PRODUCT_DETAIL,
   productId,
-});
+})
 
-export const getProductDetailSuccess = (products) => ({
+export const getProductDetailSuccess = products => ({
   type: GET_PRODUCT_DETAIL_SUCCESS,
   payload: products,
-});
+})
 
-export const getProductDetailFail = (error) => ({
+export const getProductDetailFail = error => ({
   type: GET_PRODUCT_DETAIL_FAIL,
   payload: error,
-});
+})
 
 export const getOrders = () => ({
   type: GET_ORDERS,
-});
+})
 
-export const getOrdersSuccess = (orders) => ({
+export const getOrdersSuccess = orders => ({
   type: GET_ORDERS_SUCCESS,
   payload: orders,
-});
+})
 
-export const getOrdersFail = (error) => ({
+export const getOrdersFail = error => ({
   type: GET_ORDERS_FAIL,
   payload: error,
-});
+})
 
-export const addNewOrder = (order) => ({
+export const addNewOrder = order => ({
   type: ADD_NEW_ORDER,
   payload: order,
-});
+})
 
-export const addOrderSuccess = (order) => ({
+export const addOrderSuccess = order => ({
   type: ADD_ORDER_SUCCESS,
   payload: order,
-});
+})
 
-export const addOrderFail = (error) => ({
+export const addOrderFail = error => ({
   type: ADD_ORDER_FAIL,
   payload: error,
-});
+})
 
-export const updateOrder = (order) => ({
+export const updateOrder = order => ({
   type: UPDATE_ORDER,
   payload: order,
-});
+})
 
-export const updateOrderSuccess = (order) => ({
+export const updateOrderSuccess = order => ({
   type: UPDATE_ORDER_SUCCESS,
   payload: order,
-});
+})
 
-export const updateOrderFail = (error) => ({
+export const updateOrderFail = error => ({
   type: UPDATE_ORDER_FAIL,
   payload: error,
-});
+})
 
-export const deleteOrder = (order) => ({
+export const deleteOrder = order => ({
   type: DELETE_ORDER,
   payload: order,
-});
+})
 
-export const deleteOrderSuccess = (order) => ({
+export const deleteOrderSuccess = order => ({
   type: DELETE_ORDER_SUCCESS,
   payload: order,
-});
+})
 
-export const deleteOrderFail = (error) => ({
+export const deleteOrderFail = error => ({
   type: DELETE_ORDER_FAIL,
   payload: error,
-});
+})
 
 export const getCartData = () => ({
   type: GET_CART_DATA,
-});
+})
 
-export const getCartDataSuccess = (cartData) => ({
+export const getCartDataSuccess = cartData => ({
   type: GET_CART_DATA_SUCCESS,
   payload: cartData,
-});
+})
 
-export const getCartDataFail = (error) => ({
+export const getCartDataFail = error => ({
   type: GET_CART_DATA_FAIL,
   payload: error,
-});
+})
 
 export const getCustomers = () => ({
   type: GET_CUSTOMERS,
-});
+})
 
-export const getCustomersSuccess = (customers) => ({
+export const getCustomersSuccess = customers => ({
   type: GET_CUSTOMERS_SUCCESS,
   payload: customers,
-});
+})
 
-export const getCustomersFail = (error) => ({
+export const getCustomersFail = error => ({
   type: GET_CUSTOMERS_FAIL,
   payload: error,
-});
+})
 
-export const addNewCustomer = (customer) => ({
+export const addNewCustomer = customer => ({
   type: ADD_NEW_CUSTOMER,
   payload: customer,
-});
+})
 
-export const addCustomerSuccess = (customer) => ({
+export const addCustomerSuccess = customer => ({
   type: ADD_CUSTOMER_SUCCESS,
   payload: customer,
-});
+})
 
-export const addCustomerFail = (error) => ({
+export const addCustomerFail = error => ({
   type: ADD_CUSTOMER_FAIL,
   payload: error,
-});
+})
 
-export const updateCustomer = (customer) => ({
+export const updateCustomer = customer => ({
   type: UPDATE_CUSTOMER,
   payload: customer,
-});
+})
 
-export const updateCustomerSuccess = (customer) => ({
+export const updateCustomerSuccess = customer => ({
   type: UPDATE_CUSTOMER_SUCCESS,
   payload: customer,
-});
+})
 
-export const updateCustomerFail = (error) => ({
+export const updateCustomerFail = error => ({
   type: UPDATE_CUSTOMER_FAIL,
   payload: error,
-});
+})
 
-export const deleteCustomer = (customer) => ({
+export const deleteCustomer = customer => ({
   type: DELETE_CUSTOMER,
   payload: customer,
-});
+})
 
-export const deleteCustomerSuccess = (customer) => ({
+export const deleteCustomerSuccess = customer => ({
   type: DELETE_CUSTOMER_SUCCESS,
   payload: customer,
-});
+})
 
-export const deleteCustomerFail = (error) => ({
+export const deleteCustomerFail = error => ({
   type: DELETE_CUSTOMER_FAIL,
   payload: error,
-});
+})
 
 export const getShops = () => ({
   type: GET_SHOPS,
-});
+})
 
-export const getShopsSuccess = (shops) => ({
+export const getShopsSuccess = shops => ({
   type: GET_SHOPS_SUCCESS,
   payload: shops,
-});
+})
 
-export const getShopsFail = (error) => ({
+export const getShopsFail = error => ({
   type: GET_SHOPS_FAIL,
   payload: error,
-});
+})
 
 export const getProductComments = () => ({
   type: GET_PRODUCT_COMMENTS,
-});
+})
 
-export const getProductCommentsSuccess = (comments) => ({
+export const getProductCommentsSuccess = comments => ({
   type: GET_PRODUCT_COMMENTS_SUCCESS,
   payload: comments,
-});
+})
 
-export const getProductCommentsFail = (error) => ({
+export const getProductCommentsFail = error => ({
   type: GET_PRODUCT_COMMENTS_FAIL,
   payload: error,
-});
+})
 
 export const onLikeComment = (commentId, productId) => ({
   type: ON_LIKE_COMMENT,
   payload: { commentId, productId },
-});
+})
 
-export const onLikeCommentSuccess = (comments) => ({
+export const onLikeCommentSuccess = comments => ({
   type: ON_LIKE_COMMENT_SUCCESS,
   payload: comments,
-});
+})
 
-export const onLikeCommentFail = (error) => ({
+export const onLikeCommentFail = error => ({
   type: ON_LIKE_COMMENT_FAIL,
   payload: error,
-});
+})
 
 export const onLikeReply = (commentId, productId, replyId) => ({
   type: ON_LIKE_REPLY,
   payload: { commentId, productId, replyId },
-});
+})
 
-export const onLikeReplySuccess = (comments) => ({
+export const onLikeReplySuccess = comments => ({
   type: ON_LIKE_REPLY_SUCCESS,
   payload: comments,
-});
+})
 
-export const onLikeReplyFail = (error) => ({
+export const onLikeReplyFail = error => ({
   type: ON_LIKE_REPLY_FAIL,
   payload: error,
-});
+})
 
 export const onAddReply = (commentId, productId, replyText) => ({
   type: ON_ADD_REPLY,
   payload: { commentId, productId, replyText },
-});
+})
 
-export const onAddReplySuccess = (comments) => ({
+export const onAddReplySuccess = comments => ({
   type: ON_ADD_REPLY_SUCCESS,
   payload: comments,
-});
+})
 
-export const onAddReplyFail = (error) => ({
+export const onAddReplyFail = error => ({
   type: ON_ADD_REPLY_FAIL,
   payload: error,
-});
+})
 
 export const onAddComment = (productId, commentText) => ({
   type: ON_ADD_COMMENT,
   payload: { productId, commentText },
-});
+})
 
-export const onAddCommentSuccess = (comments) => ({
+export const onAddCommentSuccess = comments => ({
   type: ON_ADD_COMMENT_SUCCESS,
   payload: comments,
-});
+})
 
-export const onAddCommentFail = (error) => ({
+export const onAddCommentFail = error => ({
   type: ON_ADD_COMMENT_FAIL,
   payload: error,
-});
+})

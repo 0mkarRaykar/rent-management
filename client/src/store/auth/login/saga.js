@@ -30,8 +30,12 @@ function* loginUser({ payload: { user, history } }) {
     }
 
     localStorage.setItem("authUser", JSON.stringify(loggedInUser));
-    localStorage.setItem("accessToken", accessToken);
-    localStorage.setItem("refreshToken", refreshToken);
+    if (accessToken) {
+      localStorage.setItem("accessToken", accessToken);
+    }
+    if (refreshToken) {
+      localStorage.setItem("refreshToken", refreshToken);
+    }
 
     yield put(loginSuccess(loggedInUser));
     toast.success("Login successful!");

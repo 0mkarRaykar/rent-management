@@ -21,149 +21,79 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "reactstrap";
-
-//Import Breadcrumb
 import Breadcrumbs from "/src/components/Common/Breadcrumb";
-
 import DeleteModal from "../../../components/Common/DeleteModal";
-import {
-  getCustomers as onGetCustomers,
-  addNewCustomer as onAddNewCustomer,
-  updateCustomer as onUpdateCustomer,
-  deleteCustomer as onDeleteCustomer,
-} from "/src/store/e-commerce/actions";
-
-//redux
-import { useSelector, useDispatch } from "react-redux";
-import { createSelector } from "reselect";
 import TableContainer from "../../../components/Common/TableContainer";
 import Spinners from "../../../components/Common/Spinner";
 import moment from "moment";
 import { ToastContainer } from "react-toastify";
-
-// flatpickr
-import "flatpickr/dist/themes/material_blue.css";
 import FlatPickr from "react-flatpickr";
-
-// PatternFormat
+import "flatpickr/dist/themes/material_blue.css";
 import { PatternFormat } from "react-number-format";
 
-const Users = () => {
-  //meta title
-  document.title = "Customers | Skote - Vite React Admin & Dashboard Template";
+import { useDispatch, useSelector } from "react-redux";
+import { createSelector } from "reselect";
 
+// Import updated user actions
+import {
+  fetchUsersRequest as onGetUsers,
+  addUserRequest as onAddNewUser,
+  updateUserRequest as onUpdateUser,
+  deleteUserRequest as onDeleteUser,
+} from "../../../store/user/fetchUser/actions";
+
+const EcommerceCustomers = () => {
+  document.title = "Users | Skote";
   const dispatch = useDispatch();
 
-  const UserProperties = createSelector(
-    (state) => state.ecommerce,
-    (Ecommerce) => ({
-      customers: Ecommerce.customers,
-      loading: Ecommerce.loading,
+  // Updated selector for users
+  const usersState = createSelector(
+    (state) => state.users,
+    (usersState) => ({
+      users: usersState.users || [],
+      loading: usersState.loading || false,
+      error: usersState.error || null,
     })
   );
 
-  const { customers, loading } = useSelector(UserProperties);
-
+  const { users, loading, error } = useSelector(usersState);
   const [isLoading, setLoading] = useState(loading);
-
   const [modal, setModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [customer, setCustomer] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
 
-  // validation
+  // Updated validation schema for API data
   const validation = useFormik({
-    // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
-
     initialValues: {
-      username: (customer && customer.username) || "",
-      phone: (customer && customer.phone) || "",
-      email: (customer && customer.email) || "",
-      address: (customer && customer.address) || "",
-      rating: (customer && customer.rating) || "",
-      walletBalance: (customer && customer.walletBalance) || "",
-      joiningDate: (customer && customer.joiningDate) || "",
+      fullName: (selectedUser && selectedUser.fullName) || "",
+      mobileNumber: (selectedUser && selectedUser.mobileNumber) || "",
+      email: (selectedUser && selectedUser.email) || "",
     },
     validationSchema: Yup.object({
-      username: Yup.string().required("Please Enter Your Name"),
-      phone: Yup.string().required("Please Enter Your Phone"),
+      fullName: Yup.string().required("Please Enter Full Name"),
+      mobileNumber: Yup.string().required("Please Enter mobile Number"),
       email: Yup.string()
-        .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Please Enter Valid Email")
-        .required("Please Enter Your Email"),
-      address: Yup.string().required("Please Enter Your Address"),
-      rating: Yup.string()
-        .matches(/\b([0-9]|10)\b/, "Please Enter Valid Rating")
-        .required("Please Enter Your Rating"),
-      walletBalance: Yup.string().required("Please Enter Your Wallet Balance"),
-      joiningDate: Yup.string().required("Please Enter Your Joining Date"),
+        .email("Please Enter Valid Email")
+        .required("Please Enter Email"),
     }),
     onSubmit: (values) => {
       if (isEdit) {
-        const updateCustomer = {
-          id: customer ? customer.id : 0,
-          username: values.username,
-          phone: values.phone,
-          email: values.email,
-          address: values.address,
-          rating: values.rating,
-          walletBalance: values.walletBalance,
-          joiningDate: values.joiningDate,
-        };
-        // update customer
-        dispatch(onUpdateCustomer(updateCustomer));
-        validation.resetForm();
+        dispatch(onUpdateUser(updatedUser));
       } else {
-        const newCustomer = {
-          id: Math.floor(Math.random() * (30 - 20)) + 20,
-          username: values["username"],
-          phone: values["phone"],
-          email: values["email"],
-          address: values["address"],
-          rating: values["rating"],
-          walletBalance: values["walletBalance"],
-          joiningDate: values["joiningDate"],
-        };
-        // save new customer
-        dispatch(onAddNewCustomer(newCustomer));
-        validation.resetForm();
+        dispatch(onAddNewUser(values));
       }
+      validation.resetForm();
       toggle();
     },
   });
 
-  const handleCustomerClick = (arg) => {
-    const customer = arg;
-
-    setCustomer({
-      id: customer.id,
-      username: customer.username,
-      phone: customer.phone,
-      email: customer.email,
-      address: customer.address,
-      rating: customer.rating,
-      walletBalance: customer.walletBalance,
-      joiningDate: customer.joiningDate,
-    });
-
-    setIsEdit(true);
-    toggle();
-  };
-
-  // Customer Column
+  // Updated columns for API data
   const columns = useMemo(
     () => [
       {
-        header: "#",
-        accessorKey: "id",
-        cell: () => {
-          return <input type="checkbox" className="form-check-input" />;
-        },
-        enableColumnFilter: false,
-        enableSorting: true,
-      },
-      {
-        header: "Username",
-        accessorKey: "username",
+        header: "Full Name",
+        accessorKey: "fullName",
         enableColumnFilter: false,
         enableSorting: true,
       },
@@ -172,42 +102,17 @@ const Users = () => {
         accessorKey: "email",
         enableColumnFilter: false,
         enableSorting: true,
-        cell: (cell) => {
-          return (
-            <>
-              <p className="mb-0">{cell.row.original.email}</p>
-            </>
-          );
-        },
       },
       {
-        header: "Phone",
-        accessorKey: "phone",
+        header: "mobileNumber",
+        accessorKey: "mobileNumber",
         enableColumnFilter: false,
         enableSorting: true,
       },
       {
-        header: "Rating",
-        accessorKey: "rating",
-        enableColumnFilter: false,
-        enableSorting: true,
-        cell: (cellProps) => {
-          return (
-            <span className="badge bg-success font-size-12">
-              <i className="mdi mdi-star me-1"></i> {cellProps.getValue()}
-            </span>
-          );
-        },
-      },
-      {
-        header: "Wallet Balances",
-        accessorKey: "walletBalance",
-        enableColumnFilter: false,
-        enableSorting: true,
-      },
-      {
-        header: "Joining Date",
-        accessorKey: "joiningDate",
+        header: "Joined Date",
+        accessorKey: "createdAt",
+        cell: (cell) => moment(cell.getValue()).format("LL"),
         enableColumnFilter: false,
         enableSorting: true,
       },
@@ -263,52 +168,57 @@ const Users = () => {
     []
   );
 
+  useEffect(() => {
+    if (users && !users.length) {
+      dispatch(onGetUsers());
+    }
+  }, [dispatch, users]);
+
+  const handleUserClick = (user) => {
+    setSelectedUser(user);
+    setIsEdit(false);
+    toggle();
+  };
+
   const toggle = () => {
     if (modal) {
       setModal(false);
-      setCustomer(null);
+      setSelectedUser(null);
     } else {
       setModal(true);
     }
   };
 
-  //delete customer
+  const handleAddUser = () => {
+    setSelectedUser(null);
+    setIsEdit(false);
+    toggle();
+  };
+
   const [deleteModal, setDeleteModal] = useState(false);
 
-  const onClickDelete = (customer) => {
-    setCustomer(customer);
+  const onClickDelete = (user) => {
+    setSelectedUser(user);
     setDeleteModal(true);
   };
 
-  const handleDeleteCustomer = () => {
-    if (customer && customer.id) {
-      dispatch(onDeleteCustomer(customer.id));
+  const handleDeleteUser = () => {
+    if (selectedUser && selectedUser._id) {
+      dispatch(onDeleteUser(selectedUser._id));
       setDeleteModal(false);
-      setCustomer("");
     }
-  };
-
-  useEffect(() => {
-    if (customers && !customers.length) {
-      dispatch(onGetCustomers());
-    }
-  }, [dispatch, customers]);
-
-  const handleCustomerClicks = () => {
-    setIsEdit(false);
-    toggle();
   };
 
   return (
     <React.Fragment>
       <DeleteModal
         show={deleteModal}
-        onDeleteClick={handleDeleteCustomer}
+        onDeleteClick={handleDeleteUser}
         onCloseClick={() => setDeleteModal(false)}
       />
       <div className="page-content">
         <Container fluid>
-          <Breadcrumbs title="Ecommerce" breadcrumbItem="Customers" />
+          <Breadcrumbs title="Users" breadcrumbItem="User Management" />
           <Row>
             {isLoading ? (
               <Spinners setLoading={setLoading} />
@@ -318,14 +228,14 @@ const Users = () => {
                   <CardBody>
                     <TableContainer
                       columns={columns}
-                      data={customers}
+                      data={users}
                       isGlobalFilter={true}
                       isAddButton={true}
                       isPagination={true}
                       isCustomPageSize={true}
-                      handleUserClick={handleCustomerClicks}
+                      handleUserClick={handleAddUser}
                       buttonClass="btn btn-success btn-rounded waves-effect waves-light mb-2 me-2 addCustomers-modal"
-                      buttonName=" New Customers"
+                      buttonName="Add New User"
                       paginationWrapper="dataTables_paginate paging_simple_numbers pagination-rounded"
                       tableClass="align-middle table-nowrap dt-responsive nowrap w-100 dataTable no-footer dtr-inline"
                       theadClass="table-light"
@@ -337,9 +247,10 @@ const Users = () => {
               </Col>
             )}
           </Row>
+
           <Modal isOpen={modal} toggle={toggle}>
             <ModalHeader toggle={toggle} tag="h4">
-              {!!isEdit ? "Edit Customer" : "Add Customer"}
+              {!!isEdit ? "Edit User" : "Add User"}
             </ModalHeader>
             <ModalBody>
               <Form
@@ -352,56 +263,36 @@ const Users = () => {
                 <Row>
                   <Col className="col-12">
                     <div className="mb-3">
-                      <Label className="form-label">UserName</Label>
+                      <Label className="form-label">Full Name</Label>
                       <Input
-                        name="username"
+                        name="fullName"
                         type="text"
-                        placeholder="Insert User Name"
+                        placeholder="Insert full name"
                         onChange={validation.handleChange}
                         onBlur={validation.handleBlur}
-                        value={validation.values.username || ""}
+                        value={validation.values.fullName || ""}
                         invalid={
-                          validation.touched.username &&
-                          validation.errors.username
+                          validation.touched.fullName &&
+                          validation.errors.fullName
                             ? true
                             : false
                         }
                       />
-                      {validation.touched.username &&
-                      validation.errors.username ? (
+                      {validation.touched.fullName &&
+                      validation.errors.fullName ? (
                         <FormFeedback type="invalid">
-                          {validation.errors.username}
+                          {validation.errors.fullName}
                         </FormFeedback>
                       ) : null}
                     </div>
-
                     <div className="mb-3">
-                      <Label className="form-label">Phone No</Label>
-                      <PatternFormat
-                        className="form-control"
-                        name="phone"
-                        placeholder="Insert Phone No"
-                        value={validation.values.phone || ""}
-                        onChange={validation.handleChange}
-                        format="###-###-####"
-                      />
-
-                      {validation.touched.phone && validation.errors.phone ? (
-                        <FormFeedback type="invalid" className="d-block">
-                          {validation.errors.phone}
-                        </FormFeedback>
-                      ) : null}
-                    </div>
-
-                    <div className="mb-3">
-                      <Label className="form-label">Email Id</Label>
+                      <Label className="form-label">Email</Label>
                       <Input
                         name="email"
                         type="email"
                         placeholder="Insert Email Id"
-                        onChange={validation.handleChange}
-                        onBlur={validation.handleBlur}
                         value={validation.values.email || ""}
+                        onChange={validation.handleChange}
                         invalid={
                           validation.touched.email && validation.errors.email
                             ? true
@@ -414,116 +305,30 @@ const Users = () => {
                         </FormFeedback>
                       ) : null}
                     </div>
-
                     <div className="mb-3">
-                      <Label className="form-label">Address</Label>
-                      <Input
-                        name="address"
-                        type="textarea"
-                        placeholder="Insert Address"
-                        rows="3"
-                        onChange={validation.handleChange}
-                        onBlur={validation.handleBlur}
-                        value={validation.values.address || ""}
-                        invalid={
-                          validation.touched.address &&
-                          validation.errors.address
-                            ? true
-                            : false
-                        }
-                      />
-                      {validation.touched.address &&
-                      validation.errors.address ? (
-                        <FormFeedback type="invalid">
-                          {validation.errors.address}
-                        </FormFeedback>
-                      ) : null}
-                    </div>
-
-                    <div className="mb-3">
-                      <Label className="form-label">Rating</Label>
-                      <Input
-                        name="rating"
-                        type="text"
-                        placeholder="Insert Rating"
-                        onChange={validation.handleChange}
-                        onBlur={validation.handleBlur}
-                        value={validation.values.rating || ""}
-                        invalid={
-                          validation.touched.rating && validation.errors.rating
-                            ? true
-                            : false
-                        }
-                      />
-                      {validation.touched.rating && validation.errors.rating ? (
-                        <FormFeedback type="invalid">
-                          {validation.errors.rating}
-                        </FormFeedback>
-                      ) : null}
-                    </div>
-
-                    <div className="mb-3">
-                      <Label className="form-label">Wallet Balance</Label>
-                      <Input
-                        name="walletBalance"
-                        type="text"
-                        placeholder="Insert Wallet Balance"
-                        onChange={validation.handleChange}
-                        onBlur={validation.handleBlur}
-                        value={validation.values.walletBalance || ""}
-                        invalid={
-                          validation.touched.walletBalance &&
-                          validation.errors.walletBalance
-                            ? true
-                            : false
-                        }
-                      />
-                      {validation.touched.walletBalance &&
-                      validation.errors.walletBalance ? (
-                        <FormFeedback type="invalid">
-                          {validation.errors.walletBalance}
-                        </FormFeedback>
-                      ) : null}
-                    </div>
-
-                    <div className="mb-3">
-                      <Label className="form-label">Joining Date</Label>
-                      <FlatPickr
+                      <Label className="form-label">mobileNumber</Label>
+                      <PatternFormat
                         className="form-control"
-                        name="joiningDate"
-                        placeholder="Select time"
-                        value={validation.values.joiningDate || ""}
-                        options={{
-                          dateFormat: "d M, Y",
-                        }}
-                        onChange={(date) =>
-                          validation.setFieldValue(
-                            "joiningDate",
-                            moment(date[0]).format("DD MMMM ,YYYY")
-                          )
-                        }
+                        name="mobileNumber"
+                        placeholder="Insert Mobile No"
+                        value={validation.values.mobileNumber || ""}
+                        onChange={validation.handleChange}
+                        format="###-###-####"
                       />
-                      {validation.touched.joiningDate &&
-                      validation.errors.joiningDate ? (
+                      {validation.touched.mobileNumber &&
+                      validation.errors.mobileNumber ? (
                         <FormFeedback type="invalid" className="d-block">
-                          {validation.errors.joiningDate}
+                          {validation.errors.phone}
                         </FormFeedback>
                       ) : null}
                     </div>
                   </Col>
                 </Row>
-                <Row>
-                  <Col>
-                    <div className="text-end">
-                      <button
-                        type="submit"
-                        className="btn btn-success save-customer"
-                      >
-                        Save
-                      </button>
-                    </div>
-                  </Col>
-                </Row>
+                <div className="text-end">
+                  <button type="submit" className="btn btn-customer">
+                    Save
+                  </button>
+                </div>
               </Form>
             </ModalBody>
           </Modal>
@@ -534,12 +339,12 @@ const Users = () => {
   );
 };
 
-Users.propTypes = {
-  customers: PropTypes.array,
-  onGetCustomers: PropTypes.func,
-  onAddNewCustomer: PropTypes.func,
-  onDeleteCustomer: PropTypes.func,
-  onUpdateCustomer: PropTypes.func,
+EcommerceCustomers.propTypes = {
+  users: PropTypes.array,
+  onGetUsers: PropTypes.func,
+  onAddNewUser: PropTypes.func,
+  onDeleteUser: PropTypes.func,
+  onUpdateUser: PropTypes.func,
 };
 
-export default Users;
+export default EcommerceCustomers;

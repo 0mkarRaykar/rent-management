@@ -1,5 +1,7 @@
 import { takeEvery, put, call } from "redux-saga/effects";
 import axios from "axios";
+import { toast } from "react-toastify";
+
 import { REGISTER_USER } from "./actionTypes";
 import { registerUserSuccessful, registerUserFailed } from "./actions";
 
@@ -7,20 +9,25 @@ import { registerUserSuccessful, registerUserFailed } from "./actions";
 const API_URL =
   "https://rent-management-pg2q.onrender.com/api/v1/auths/register";
 
-// Worker Saga: Handles user registration
-// Worker Saga: Handles user registration
+const registerApi = async (userData) => {
+  const response = await axios.post(API_URL, userData);
+  return response.data;
+};
+
 function* registerUser({ payload: { user, navigate } }) {
   try {
-    const response = yield call(axios.post, API_URL, user);
+    const response = yield call(registerApi, user);
 
-    // Store authentication tokens
-    localStorage.setItem("authToken", response.data.token);
-    localStorage.setItem("user", JSON.stringify(response.data.user));
+    const { user: registeredUser, token } = response.data;
 
-    yield put(registerUserSuccessful(response.data));
+    /// Store user data and tokens in localStorage
+    localStorage.setItem("authUser", JSON.stringify(registeredUser));
+    localStorage.setItem("accessToken", token);
 
+    yield put(registerUserSuccessful(registerUser));
+    toast.success("Registration successful!");
     if (navigate) {
-      navigate("/dashboard");
+      navigate("/login");
     }
   } catch (error) {
     yield put(

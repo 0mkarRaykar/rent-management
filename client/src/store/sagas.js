@@ -9,6 +9,8 @@ import LayoutSaga from "./layout/saga";
 
 import ecommerceSaga from "./e-commerce/saga";
 
+import usersSaga from "./user/fetchUser/saga";
+
 export default function* rootSaga() {
   yield all([
     //public
@@ -18,5 +20,6 @@ export default function* rootSaga() {
     fork(ProfileSaga),
     fork(LayoutSaga),
     fork(ecommerceSaga),
+    fork(usersSaga),
   ]);
 }
