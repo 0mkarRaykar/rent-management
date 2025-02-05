@@ -18,6 +18,9 @@ import VerticalLayout from "./components/VerticalLayout/";
 import HorizontalLayout from "./components/HorizontalLayout/";
 import NonAuthLayout from "./components/NonAuthLayout";
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 // Import scss
 import "./assets/scss/theme.scss";
 
@@ -45,16 +48,11 @@ fakeBackend();
 
 const App = (props) => {
   const selectLayoutState = (state) => state.Layout;
-  const LayoutProperties = createSelector(
-    selectLayoutState,
-      (layout) => ({
-        layoutType: layout.layoutType,
-      })
-  );
+  const LayoutProperties = createSelector(selectLayoutState, (layout) => ({
+    layoutType: layout.layoutType,
+  }));
 
-    const {
-      layoutType
-  } = useSelector(LayoutProperties);
+  const { layoutType } = useSelector(LayoutProperties);
 
   function getLayout(layoutType) {
     let layoutCls = VerticalLayout;
@@ -73,6 +71,7 @@ const App = (props) => {
 
   return (
     <React.Fragment>
+      <ToastContainer />
       <Routes>
         {publicRoutes.map((route, idx) => (
           <Route

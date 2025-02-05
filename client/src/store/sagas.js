@@ -8,7 +8,7 @@ import ProfileSaga from "./auth/profile/saga";
 import LayoutSaga from "./layout/saga";
 
 
-import usersSaga from "./user/fetchUser/saga";
+import usersSaga from "./user/saga";
 
 export default function* rootSaga() {
   yield all([

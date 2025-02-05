@@ -2,6 +2,9 @@ import {
   FETCH_USERS_REQUEST,
   FETCH_USERS_SUCCESS,
   FETCH_USERS_FAILURE,
+  FETCH_USER_BY_ID_REQUEST,
+  FETCH_USER_BY_ID_SUCCESS,
+  FETCH_USER_BY_ID_FAILURE,
   ADD_USER_REQUEST,
   ADD_USER_SUCCESS,
   ADD_USER_FAILURE,
@@ -41,6 +44,22 @@ export const addUserSuccess = (user) => ({
 
 export const addUserFailure = (error) => ({
   type: ADD_USER_FAILURE,
+  payload: error,
+});
+
+// Add these new action creators
+export const fetchUserByIdRequest = (userId) => ({
+  type: FETCH_USER_BY_ID_REQUEST,
+  payload: userId,
+});
+
+export const fetchUserByIdSuccess = (user) => ({
+  type: FETCH_USER_BY_ID_SUCCESS,
+  payload: user,
+});
+
+export const fetchUserByIdFailure = (error) => ({
+  type: FETCH_USER_BY_ID_FAILURE,
   payload: error,
 });
 

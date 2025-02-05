@@ -10,7 +10,7 @@ import ForgetPassword from "./auth/forgetpwd/reducer";
 import Profile from "./auth/profile/reducer";
 
 //User
-import users from "./user/fetchUser/reducer";
+import users from "./user/reducer";
 
 const rootReducer = combineReducers({
   // public

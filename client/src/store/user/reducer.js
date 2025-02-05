@@ -2,6 +2,9 @@ import {
   FETCH_USERS_REQUEST,
   FETCH_USERS_SUCCESS,
   FETCH_USERS_FAILURE,
+  FETCH_USER_BY_ID_REQUEST,
+  FETCH_USER_BY_ID_SUCCESS,
+  FETCH_USER_BY_ID_FAILURE,
   ADD_USER_REQUEST,
   ADD_USER_SUCCESS,
   ADD_USER_FAILURE,
@@ -31,6 +34,29 @@ const usersReducer = (state = initialState, action) => {
       return { ...state, loading: false, users: action.payload };
     case FETCH_USERS_FAILURE:
       return { ...state, loading: false, error: action.payload };
+
+    case FETCH_USER_BY_ID_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case FETCH_USER_BY_ID_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        users: action.payload,
+        error: null,
+      };
+
+    case FETCH_USER_BY_ID_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        users: null,
+        error: action.payload,
+      };
 
     // Add User
     case ADD_USER_REQUEST:
